@@ -1,4 +1,10 @@
-FROM dunglas/frankenphp:1-php8.5-alpine AS php-base
+# PHP 8.5.12 fixes GHSA-w8hw-w9fx-j79w and GHSA-6wmf-4rv5-p3rp.
+# Pin the verified multi-platform image, not a mutable PHP/FrankenPHP tag.
+FROM dunglas/frankenphp:1.13.2-php8.5-alpine@sha256:1654329698f63194af20122a3c483f3259b715d2a304e39e6398cbb8e9efcfcf AS php-base
+
+COPY backend/laravel/docker/prod/check-runtime.php /usr/local/lib/check-php-runtime.php
+RUN php /usr/local/lib/check-php-runtime.php \
+    && frankenphp php-cli /usr/local/lib/check-php-runtime.php
 
 RUN install-php-extensions \
         pdo_pgsql \

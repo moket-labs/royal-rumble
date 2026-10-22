@@ -22,6 +22,9 @@ trap cleanup EXIT
 
 cd "$ROOT"
 docker build -f backend/laravel/docker/prod/Dockerfile -t "$API_IMAGE" .
+# Check the final image's CLI and embedded PHP, not just its version label.
+docker run --rm --entrypoint php "$API_IMAGE" /usr/local/lib/check-php-runtime.php
+docker run --rm --entrypoint frankenphp "$API_IMAGE" php-cli /usr/local/lib/check-php-runtime.php
 docker build -f frontend/Dockerfile -t "$FRONTEND_IMAGE" \
   --build-arg VITE_BACKEND_URL=http://localhost:${API_PORT} \
   --build-arg VITE_PUSHER_HOST=localhost \
