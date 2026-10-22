@@ -13,7 +13,7 @@ dependencies = [
     "beautifulsoup4>=4.15,<5",
     "joblib>=1.5,<2",
     "pathvalidate>=3.3,<4",
-    "pillow>=11.3,<13",
+    "pillow>=13.0,<14",
 ]
 
 [project.scripts]
