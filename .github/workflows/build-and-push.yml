@@ -3,6 +3,10 @@ name: build-and-push
 on:
   push:
     branches: [main]
+    # Configuration delivery (including this guard) must not publish or promote.
+    paths-ignore:
+      - renovate.json
+      - .github/workflows/build-and-push.yml
   workflow_dispatch:
 
 concurrency:
@@ -32,6 +36,20 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           lfs: true
+          fetch-depth: 0
+      - name: Refuse configuration-only push publication
+        if: github.event_name == 'push'
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+        run: |
+          # A paths-filter timeout/large push must still fail closed before login.
+          if git diff --quiet --no-renames "$BEFORE_SHA" "$GITHUB_SHA" -- . \
+            ':(exclude)renovate.json' ':(exclude).github/workflows/build-and-push.yml'; then
+            echo '::error::Configuration-only push: publication refused.'
+            exit 1
+          else
+            test "$?" -eq 1
+          fi
       - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
       - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
@@ -58,6 +76,21 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+      - name: Refuse configuration-only push publication
+        if: github.event_name == 'push'
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+        run: |
+          # A paths-filter timeout/large push must still fail closed before login.
+          if git diff --quiet --no-renames "$BEFORE_SHA" "$GITHUB_SHA" -- . \
+            ':(exclude)renovate.json' ':(exclude).github/workflows/build-and-push.yml'; then
+            echo '::error::Configuration-only push: publication refused.'
+            exit 1
+          else
+            test "$?" -eq 1
+          fi
       - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
       - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
