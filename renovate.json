@@ -25,10 +25,20 @@
     {
       "matchManagers": ["github-actions"],
       "groupName": "github-actions"
+    },
+    {
+      "matchManagers": ["dockerfile"],
+      "matchDatasources": ["docker"],
+      "pinDigests": true
     }
   ],
-  "automerge": true,
+  "automerge": false,
   "prConcurrentLimit": 20,
   "prHourlyLimit": 10,
-  "rebaseWhen": "auto"
+  "rebaseWhen": "auto",
+  "dependencyDashboard": true,
+  "dependencyDashboardApproval": true,
+  "platformAutomerge": false,
+  "lockFileMaintenance": { "enabled": false },
+  "enabledManagers": ["dockerfile", "docker-compose", "composer", "npm", "poetry", "github-actions"]
 }
