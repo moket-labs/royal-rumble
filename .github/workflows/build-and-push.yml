@@ -116,6 +116,8 @@ jobs:
           cache-to: type=gha,mode=max,scope=royal-frontend
 
   update-gitops:
+    # Scoped analytics releases are promoted frontend-only by the coordinator.
+    if: ${{ false }}
     name: update GitOps image tags
     needs: [api, frontend]
     runs-on: moket-public-arc
