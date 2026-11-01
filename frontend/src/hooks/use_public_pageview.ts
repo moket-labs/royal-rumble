@@ -19,10 +19,11 @@ let sdkTrack: ((payload: Pageview) => Promise<void>) | undefined;
 function publicEntry() {
   const browser = window as AnalyticsWindow;
   const { protocol, hostname, pathname, search, hash } = browser.location;
-  const dnt = browser.doNotTrack || browser.navigator.doNotTrack ||
-    (browser.navigator as Navigator & { msDoNotTrack?: string }).msDoNotTrack;
+  const dnt = [browser.doNotTrack, browser.navigator.doNotTrack,
+    (browser.navigator as Navigator & { msDoNotTrack?: string | number }).msDoNotTrack]
+    .some((value) => value === 1 || value === "1" || (typeof value === "string" && value.toLowerCase() === "yes"));
   return browser.self === browser.top && protocol === "https:" && hostname === "suffroyale.com" &&
-    pathname === "/" && !search && !hash && ![1, "1", "yes"].includes(dnt ?? "");
+    pathname === "/" && !search && !hash && !dnt;
 }
 
 // This eagerly imported module runs before router creation. A private document

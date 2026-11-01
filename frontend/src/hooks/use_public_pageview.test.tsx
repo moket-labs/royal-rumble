@@ -16,7 +16,9 @@ beforeEach(async () => {
   fetchMock.mockClear();
   window.history.replaceState({}, "", "/");
   localStorage.clear();
+  Object.defineProperty(window, "doNotTrack", { get: () => undefined, configurable: true });
   Object.defineProperty(window.navigator, "doNotTrack", { get: () => "0", configurable: true });
+  Object.defineProperty(window.navigator, "msDoNotTrack", { get: () => undefined, configurable: true });
   document.title = "PRIVATE participant and lobby title";
   vi.spyOn(document, "referrer", "get").mockReturnValue("https://accounts.example/private/token?code=secret#identity");
   delete (window as unknown as Record<string, unknown>).umami;
@@ -124,6 +126,34 @@ it.each(["1", "yes"])("honors DNT %s before script load", (value) => {
   vi.spyOn(window.navigator, "doNotTrack", "get").mockReturnValue(value);
   renderHook(() => usePublicPageview(false));
   expect(document.querySelector("script[data-website-id]")).toBeNull();
+});
+
+const conflictingDntCases = ["window", "navigator", "ms"].flatMap((field) =>
+  [1, "1", "yes", "YeS"].map((value) => ({ field, value })),
+);
+
+function setDnt(field: string, value: string | number) {
+  Object.defineProperty(field === "window" ? window : window.navigator,
+    field === "ms" ? "msDoNotTrack" : "doNotTrack", { value, configurable: true });
+}
+
+it.each(conflictingDntCases)("denies conflicting DNT $field=$value before script admission", async ({ field, value }) => {
+  // The other supported fields remain truthy "0": none may mask an opt-out.
+  ["window", "navigator", "ms"].forEach((source) => setDnt(source, "0"));
+  setDnt(field, value);
+  vi.resetModules();
+  ({ usePublicPageview } = await import("./use_public_pageview"));
+  renderHook(() => usePublicPageview(false));
+  expect(document.querySelector("script[data-website-id]")).toBeNull();
+  expect(fetchMock).not.toHaveBeenCalled();
+});
+
+it.each(conflictingDntCases)("denies conflicting DNT $field=$value at actual SDK dispatch", async ({ field, value }) => {
+  renderHook(() => usePublicPageview(false));
+  ["window", "navigator", "ms"].forEach((source) => setDnt(source, "0"));
+  setDnt(field, value);
+  await loadSdk();
+  expect(fetchMock).not.toHaveBeenCalled();
 });
 
 it("honors a late DNT change without a write", async () => {
