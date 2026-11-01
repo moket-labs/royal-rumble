@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { InputField } from "../components/form";
 import { PrimaryButton } from "../components/buttons";
 import { useI18n } from "../i18n";
+import { usePublicPageview } from "../hooks/use_public_pageview";
 
 export default function CreateJoinLobby() {
   const establishedYear = 2022;
@@ -13,6 +14,7 @@ export default function CreateJoinLobby() {
   const { t } = useI18n();
   const navigate = useNavigate();
   const normalizedCode = lobbyCode.trim().toUpperCase();
+  usePublicPageview(lobbyCode.length > 0);
 
   const updateLobbyCode = (value: string) => {
     setLobbyCode(value.toUpperCase());
