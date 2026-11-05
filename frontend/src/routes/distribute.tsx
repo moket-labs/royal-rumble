@@ -14,6 +14,48 @@ import {
 import safeChestIcon from "../assets/chests/safe.png";
 import groupChestIcon from "../assets/chests/group.png";
 import chaosChestIcon from "../assets/chests/chaos.png";
+import safeGiveSipsIcon from "../assets/cards/safe_give_sips.png";
+import safeGiveShotIcon from "../assets/cards/safe_give_shot.png";
+import safeYouAndRandomSipIcon from "../assets/cards/safe_you_and_random_sip.png";
+import safeHouseEdgeIcon from "../assets/cards/safe_house_edge.png";
+import safeSweetDealIcon from "../assets/cards/safe_sweet_deal.png";
+import safeMarkedBulletIcon from "../assets/cards/safe_marked_bullet.png";
+import safeCurrentBodyCountIcon from "../assets/cards/safe_current_body_count.png";
+import safeStableHandsIcon from "../assets/cards/safe_stable_hands.png";
+import safeBurnedSlotsIcon from "../assets/cards/safe_burned_slots.png";
+import safeBlankCheckIcon from "../assets/cards/safe_blank_check.png";
+import groupEveryoneSipIcon from "../assets/cards/group_everyone_sip.png";
+import groupEveryoneElseSipIcon from "../assets/cards/group_everyone_else_sip.png";
+import groupCheapSeatsIcon from "../assets/cards/group_cheap_seats.png";
+import groupMainEventIcon from "../assets/cards/group_main_event.png";
+import groupDoubleUndrunkSipsIcon from "../assets/cards/group_double_undrunk_sips.png";
+import groupDoubleUndrunkShotsIcon from "../assets/cards/group_double_undrunk_shots.png";
+import groupDoubleOrNothingIcon from "../assets/cards/group_double_or_nothing.png";
+import groupHouseRoundIcon from "../assets/cards/group_house_round.png";
+import groupSlotMachineIcon from "../assets/cards/group_slot_machine.png";
+import groupBodyCountIcon from "../assets/cards/group_body_count.png";
+import groupStableHandsIcon from "../assets/cards/group_stable_hands.png";
+import groupBurnedSlotsIcon from "../assets/cards/group_burned_slots.png";
+import groupOldHandsIcon from "../assets/cards/group_old_hands.png";
+import groupEdgeNumberIcon from "../assets/cards/group_edge_number.png";
+import groupNoRumbleResumeIcon from "../assets/cards/group_no_rumble_resume.png";
+import chaosGiveSipsIcon from "../assets/cards/chaos_give_sips.png";
+import chaosGiveShotsIcon from "../assets/cards/chaos_give_shots.png";
+import chaosEveryoneSipIcon from "../assets/cards/chaos_everyone_sip.png";
+import chaosEveryoneElseShotIcon from "../assets/cards/chaos_everyone_else_shot.png";
+import chaosYouDrinkShotsIcon from "../assets/cards/chaos_you_drink_shots.png";
+import chaosBlackoutTaxIcon from "../assets/cards/chaos_blackout_tax.png";
+import chaosSkullCrusherIcon from "../assets/cards/chaos_skull_crusher.png";
+import chaosLastCallIcon from "../assets/cards/chaos_last_call.png";
+import chaosRussianRouletteIcon from "../assets/cards/chaos_russian_roulette.png";
+import chaosBloodPriceIcon from "../assets/cards/chaos_blood_price.png";
+import chaosOpenTabIcon from "../assets/cards/chaos_open_tab.png";
+import chaosLegendsDueIcon from "../assets/cards/chaos_legends_due.png";
+import chaosVeteranFloorIcon from "../assets/cards/chaos_veteran_floor.png";
+import chaosEdgeNumberTaxIcon from "../assets/cards/chaos_edge_number_tax.png";
+import chaosHighTreasonIcon from "../assets/cards/chaos_high_treason.png";
+import chaosKatesWorstNightmareIcon from "../assets/cards/chaos_kates_worst_nightmare.png";
+import chaosLoadedDiceIcon from "../assets/cards/chaos_loaded_dice.png";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { apiJson, participantIdHeaders } from "../api/fetcher";
@@ -40,6 +82,50 @@ import { useI18n } from "../i18n";
 
 type Allocation = Record<number, { schluecke: number; shots: number }>;
 
+type ChestCardKey =
+  | "safe_give_sips"
+  | "safe_give_shot"
+  | "safe_you_and_random_sip"
+  | "safe_house_edge"
+  | "safe_sweet_deal"
+  | "safe_marked_bullet"
+  | "safe_current_body_count"
+  | "safe_stable_hands"
+  | "safe_burned_slots"
+  | "safe_blank_check"
+  | "group_everyone_sip"
+  | "group_everyone_else_sip"
+  | "group_cheap_seats"
+  | "group_main_event"
+  | "group_double_undrunk_sips"
+  | "group_double_undrunk_shots"
+  | "group_double_or_nothing"
+  | "group_house_round"
+  | "group_slot_machine"
+  | "group_body_count"
+  | "group_stable_hands"
+  | "group_burned_slots"
+  | "group_old_hands"
+  | "group_edge_number"
+  | "group_no_rumble_resume"
+  | "chaos_give_sips"
+  | "chaos_give_shots"
+  | "chaos_everyone_sip"
+  | "chaos_everyone_else_shot"
+  | "chaos_you_drink_shots"
+  | "chaos_blackout_tax"
+  | "chaos_skull_crusher"
+  | "chaos_last_call"
+  | "chaos_russian_roulette"
+  | "chaos_blood_price"
+  | "chaos_open_tab"
+  | "chaos_legends_due"
+  | "chaos_veteran_floor"
+  | "chaos_edge_number_tax"
+  | "chaos_high_treason"
+  | "chaos_kates_worst_nightmare"
+  | "chaos_loaded_dice";
+
 type RevealedChestResult = {
   chest_reward_id: number;
   chest_type: "safe" | "group" | "chaos";
@@ -55,6 +141,55 @@ type RevealedChestResult = {
   chooserParticipantId?: number;
   adminMode?: boolean;
 };
+
+const cardIcons: Record<ChestCardKey, string> = {
+  safe_give_sips: safeGiveSipsIcon,
+  safe_give_shot: safeGiveShotIcon,
+  safe_you_and_random_sip: safeYouAndRandomSipIcon,
+  safe_house_edge: safeHouseEdgeIcon,
+  safe_sweet_deal: safeSweetDealIcon,
+  safe_marked_bullet: safeMarkedBulletIcon,
+  safe_current_body_count: safeCurrentBodyCountIcon,
+  safe_stable_hands: safeStableHandsIcon,
+  safe_burned_slots: safeBurnedSlotsIcon,
+  safe_blank_check: safeBlankCheckIcon,
+  group_everyone_sip: groupEveryoneSipIcon,
+  group_everyone_else_sip: groupEveryoneElseSipIcon,
+  group_cheap_seats: groupCheapSeatsIcon,
+  group_main_event: groupMainEventIcon,
+  group_double_undrunk_sips: groupDoubleUndrunkSipsIcon,
+  group_double_undrunk_shots: groupDoubleUndrunkShotsIcon,
+  group_double_or_nothing: groupDoubleOrNothingIcon,
+  group_house_round: groupHouseRoundIcon,
+  group_slot_machine: groupSlotMachineIcon,
+  group_body_count: groupBodyCountIcon,
+  group_stable_hands: groupStableHandsIcon,
+  group_burned_slots: groupBurnedSlotsIcon,
+  group_old_hands: groupOldHandsIcon,
+  group_edge_number: groupEdgeNumberIcon,
+  group_no_rumble_resume: groupNoRumbleResumeIcon,
+  chaos_give_sips: chaosGiveSipsIcon,
+  chaos_give_shots: chaosGiveShotsIcon,
+  chaos_everyone_sip: chaosEveryoneSipIcon,
+  chaos_everyone_else_shot: chaosEveryoneElseShotIcon,
+  chaos_you_drink_shots: chaosYouDrinkShotsIcon,
+  chaos_blackout_tax: chaosBlackoutTaxIcon,
+  chaos_skull_crusher: chaosSkullCrusherIcon,
+  chaos_last_call: chaosLastCallIcon,
+  chaos_russian_roulette: chaosRussianRouletteIcon,
+  chaos_blood_price: chaosBloodPriceIcon,
+  chaos_open_tab: chaosOpenTabIcon,
+  chaos_legends_due: chaosLegendsDueIcon,
+  chaos_veteran_floor: chaosVeteranFloorIcon,
+  chaos_edge_number_tax: chaosEdgeNumberTaxIcon,
+  chaos_high_treason: chaosHighTreasonIcon,
+  chaos_kates_worst_nightmare: chaosKatesWorstNightmareIcon,
+  chaos_loaded_dice: chaosLoadedDiceIcon,
+};
+
+function isChestCardKey(value: string): value is ChestCardKey {
+  return value in cardIcons;
+}
 
 type EffectChoiceResolutionResult = {
   next_status: "pending_distribution" | "resolved";
@@ -86,21 +221,22 @@ export function Distribute() {
     lobby && claimedParticipantId !== null
       ? getPendingDrinkPools(lobby, claimedParticipantId, parsedEliminationId)
       : [];
-  const revealedChestResult = revealedChestRewards[0]
+  const firstRevealedChestReward = revealedChestRewards[0] ?? null;
+  const revealedChestResult = firstRevealedChestReward
     ? {
-        chest_reward_id: revealedChestRewards[0].chestRewardId,
-        chest_type: revealedChestRewards[0].chestType,
-        card_key: revealedChestRewards[0].cardKey,
-        card_mode: revealedChestRewards[0].cardMode,
-        schluecke: revealedChestRewards[0].schluecke,
-        shots: revealedChestRewards[0].shots,
-        choice_options: revealedChestRewards[0].choiceOptions,
-        selected_choice_key: revealedChestRewards[0].selectedChoiceKey,
-        affectedParticipantIds: revealedChestRewards[0].affectedParticipantIds,
+        chest_reward_id: firstRevealedChestReward.chestRewardId,
+        chest_type: firstRevealedChestReward.chestType,
+        card_key: firstRevealedChestReward.cardKey,
+        card_mode: firstRevealedChestReward.cardMode,
+        schluecke: firstRevealedChestReward.schluecke,
+        shots: firstRevealedChestReward.shots,
+        choice_options: firstRevealedChestReward.choiceOptions,
+        selected_choice_key: firstRevealedChestReward.selectedChoiceKey,
+        affectedParticipantIds: firstRevealedChestReward.affectedParticipantIds,
         offenderName:
-          revealedChestRewards[0].offender?.wrestler.name ?? t("distribute.adminTriggerOffender"),
+          firstRevealedChestReward.offender?.wrestler.name ?? t("distribute.adminTriggerOffender"),
         victimName:
-          revealedChestRewards[0].victim?.wrestler.name ?? t("distribute.adminTriggerVictim"),
+          firstRevealedChestReward.victim?.wrestler.name ?? t("distribute.adminTriggerVictim"),
       }
     : null;
   const adminRevealedChestResult =
@@ -431,30 +567,51 @@ function ChestRevealScreen({
       </Typography>
       <Card variant="outlined">
         <CardContent>
-          <Typography variant="overline" sx={{ opacity: 0.7 }}>
-            {t(`distribute.chest.${result.chest_type}`)}
-          </Typography>
-          <Typography variant="h4" sx={{ mt: 1, mb: 1 }}>
-            {getCardTitle(t, result.card_key)}
-          </Typography>
-          <Typography variant="body1" sx={{ whiteSpace: "pre-line" }}>
-            {getCardDescription(t, {
-              card_key: result.card_key,
-              card_mode: result.card_mode,
-              pending_schluecke: result.schluecke,
-              pending_shots: result.shots,
-              choice_options: result.choice_options,
-              selected_choice_key: result.selected_choice_key,
-              affectedParticipantNames: affectedParticipants.map((participant) => participant.name),
-            })}
-          </Typography>
-          {affectedParticipants.length > 0 && (
-            <Typography variant="body2" sx={{ mt: 2, opacity: 0.8 }}>
-              {t("distribute.affectedPlayers", {
-                players: affectedParticipants.map((participant) => participant.name).join(", "),
-              })}
-            </Typography>
-          )}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              gap: 2,
+              alignItems: { xs: "center", sm: "center" },
+              textAlign: { xs: "center", sm: "left" },
+            }}
+          >
+            <CardIcon imageSrc={getCardIcon(result.card_key)} size={88} />
+            <Box sx={{ minWidth: 0 }}>
+              <Typography variant="overline" sx={{ opacity: 0.7 }}>
+                {t(`distribute.chest.${result.chest_type}`)}
+              </Typography>
+              <Typography
+                variant="h4"
+                sx={{
+                  mt: 1,
+                  mb: 1,
+                  fontSize: { xs: "1.8rem", sm: "2.125rem" },
+                  lineHeight: 1.1,
+                }}
+              >
+                {getCardTitle(t, result.card_key)}
+              </Typography>
+              <Typography variant="body1" sx={{ whiteSpace: "pre-line" }}>
+                {getCardDescription(t, {
+                  card_key: result.card_key,
+                  card_mode: result.card_mode,
+                  pending_schluecke: result.schluecke,
+                  pending_shots: result.shots,
+                  choice_options: result.choice_options,
+                  selected_choice_key: result.selected_choice_key,
+                  affectedParticipantNames: affectedParticipants.map((participant) => participant.name),
+                })}
+              </Typography>
+              {affectedParticipants.length > 0 && (
+                <Typography variant="body2" sx={{ mt: 2, opacity: 0.8 }}>
+                  {t("distribute.affectedPlayers", {
+                    players: affectedParticipants.map((participant) => participant.name).join(", "),
+                  })}
+                </Typography>
+              )}
+            </Box>
+          </Box>
         </CardContent>
       </Card>
       <Button variant="contained" size="large" onClick={handleContinue} disabled={isSubmitting}>
@@ -635,18 +792,7 @@ function ChestTypeCard({
       <CardActionArea onClick={onClick} disabled={disabled}>
         <CardContent>
           <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-            <Box
-              component="img"
-              src={imageSrc}
-              alt=""
-              aria-hidden
-              sx={{
-                width: 72,
-                height: 72,
-                flexShrink: 0,
-                objectFit: "contain",
-              }}
-            />
+            <CardIcon imageSrc={imageSrc} size={72} />
             <Box sx={{ minWidth: 0 }}>
               <Typography variant="h6">{title}</Typography>
               <Typography variant="body2" sx={{ opacity: 0.8 }}>
@@ -657,6 +803,27 @@ function ChestTypeCard({
         </CardContent>
       </CardActionArea>
     </Card>
+  );
+}
+
+function CardIcon({ imageSrc, size = 72 }: { imageSrc?: string; size?: number }) {
+  if (!imageSrc) {
+    return null;
+  }
+
+  return (
+    <Box
+      component="img"
+      src={imageSrc}
+      alt=""
+      aria-hidden
+      sx={{
+        width: size,
+        height: size,
+        flexShrink: 0,
+        objectFit: "contain",
+      }}
+    />
   );
 }
 
@@ -842,7 +1009,7 @@ function buildAdminRevealResult(
     (entry) =>
       entry.id === chestRewardId &&
       entry.chooser_participant_id === participantId &&
-        (
+      (
         entry.status === "revealed_effect_choice" ||
         entry.status === "revealed_auto" ||
         entry.status === "revealed_distribution" ||
@@ -1084,6 +1251,11 @@ function formatVisibleDrinkSummary(
 
   return parts.length > 0 ? parts.join(t("history.and")) : t("history.sips", { count: 0 });
 }
+
+function getCardIcon(cardKey: string) {
+  return isChestCardKey(cardKey) ? cardIcons[cardKey] : undefined;
+}
+
 async function postChestRoll(
   lobbyCode: string,
   chestRewardId: number,
